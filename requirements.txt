@@ -1,5 +1,5 @@
 # Conexión a FRED
-fredapi==1.3.0
+fredapi
 
 # Manejo de datos
 pandas==2.1.1
