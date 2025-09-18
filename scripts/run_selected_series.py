@@ -3,13 +3,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from pipelines.fred.ingestion import fetch_series
 
-# Obtener series desde variable de entorno y separar por coma
-series_input = os.getenv("SERIES_IDS")
+# Get series from input (manual or GitHub Actions)
+series_input = input("Enter comma-separated FRED series IDs (e.g., UMCSENT,GDPC1,CPIAUCSL): ")
 series_list = [s.strip() for s in series_input.split(",")]
 
-api_key = os.getenv("FRED_API_KEY")
+# Use environment variable if available, otherwise hardcode public key
+api_key = os.getenv("FRED_API_KEY", "a6bd75c0ecd1b95bfdc5c3b9f5a97f6e")
 
-# Crear carpetas de salida
+# Create output folders
 os.makedirs("outputs/excel", exist_ok=True)
 os.makedirs("outputs/plots", exist_ok=True)
 
@@ -22,11 +23,11 @@ for series_id in series_list:
         api_key=api_key
     )
 
-    # Guardar Excel
+    # Save Excel
     excel_path = f"outputs/excel/{series_id}.xlsx"
     df.to_excel(excel_path, index=False)
 
-    # Crear gráfico
+    # Plot
     plt.figure(figsize=(10,5))
     plt.plot(df["date"], df[series_id], marker='o')
     plt.title(f"{series_id} from FRED")
